@@ -1,1 +1,2 @@
-<h1>PUNYA SAYA</h1>
+<h1>HALAMAN ABOUT SAYA</h1>
+<p>Ini adalah halaman about saya !</p>
