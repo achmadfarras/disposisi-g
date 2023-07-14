@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User_model extends CI_Model
+class Masuk_model extends CI_Model
 {
     protected $_table = 'tb_surat_masuk';
     protected $primary = 'id';
@@ -20,27 +20,27 @@ class User_model extends CI_Model
             'tgl_terima' => $this->input->post('tgl_terima'),
             'perihal' => $this->input->post('perihal'),
             'keterangan' => $this->input->post('keterangan'),
-            'image' => $this->uplodImage(),
+            'image' => $this->do_upload(),
             'no_surat' => '1',
         ];
         $this->db->insert($this->_table,$data);
     }
     
-    public function uploadImage()
+    public function do_upload()
     {
         $config['upload_path']      = './assets/photo/surat_masuk/';
-        $config['allowed_types']    = 'gif|jpg\png';
+        $config['allowed_types']    = 'gif|jpg|png';
         $config['file_name']        = $this->input->post('no_surat');
         $config['overwrite']        = true;
         $config['max_sizes']        = 1024;
 
         $this->load->library('upload', $config);
 
-        if ($this->upload->db_upload('image')) {
+        if (!$this->upload->do_upload('image')) {
+            return "no_image.jpg";
+        } else {
             return $this->upload->data("file_name");
-        }
-
-        return "no_image.jpg";
+        };
     }
     
     public function getById($id)
@@ -54,7 +54,7 @@ class User_model extends CI_Model
         $updateimage = '';
         
         if (!empty($_FILES["image"]["name"])) {
-            $updateimage = $this->uploadImage();
+            $updateimage = $this->do_upload();
         } else {
             $updateimage = $this->input->post('old_image');
         }
@@ -100,10 +100,11 @@ class User_model extends CI_Model
             'tgl_surat' => $this->input->post('tgl_surat'),
             'surat_from' => $this->input->post('surat_from'),
             'surat_to' => $this->input->post('surat_to'),
-            'tgl_terima' => $this->input->post('tgl_terima'),
+            'tgl_terima' => '0000-00-00',
             'perihal' => $this->input->post('perihal'),
             'keterangan' => $this->input->post('keterangan'),
-            'image' => $updateimage,
+            'image' => $this->do_upload(),
+            'user_id'=> $this->session->userdata('id'),
             'no_surat' => '1',
         ];
 
